@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title> CtrlVDiff: Controllable Video Generation via Unified Multimodal Video Diffusion</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/logo.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+
+  <script>
+    let currentIndex = 0;
+    let autoplayInterval = null;
+
+    function updateVideoPosition() {
+      const track = document.getElementById('videoTrack');
+      const containerWidth = document.querySelector('.video-carousel').offsetWidth;
+      track.style.transform = `translateX(-${currentIndex * containerWidth}px)`;
+      updateDots();
+    }
+
+    function nextVideo() {
+      stopAutoplay(); 
+      const total = document.querySelectorAll('.video-item').length;
+      currentIndex = (currentIndex + 1) % total;
+      updateVideoPosition();
+    }
+
+    function prevVideo() {
+      stopAutoplay();
+      const total = document.querySelectorAll('.video-item').length;
+      currentIndex = (currentIndex - 1 + total) % total;
+      updateVideoPosition();
+    }
+
+    function renderDots() {
+      const container = document.getElementById('dotContainer');
+      const total = document.querySelectorAll('.video-item').length;
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.addEventListener('click', () => {
+          stopAutoplay();
+          currentIndex = i;
+          updateVideoPosition();
+        });
+        container.appendChild(dot);
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+    }
+
+    function startAutoplay(interval = 5000) {
+      autoplayInterval = setInterval(() => {
+        const total = document.querySelectorAll('.video-item').length;
+        currentIndex = (currentIndex + 1) % total;
+        updateVideoPosition();
+      }, interval);
+    }
+
+    function stopAutoplay() {
+      clearInterval(autoplayInterval);
+    }
+
+    window.addEventListener('resize', updateVideoPosition);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDots();
+      updateVideoPosition();
+      startAutoplay(); 
+    });
+  </script>
+
+  <script>
+    function initCarousel(wrapper) {
+      const track = wrapper.querySelector('.video-track');
+      const items = wrapper.querySelectorAll('.video-item');
+      const dotsContainer = wrapper.querySelector('.dot-overlay');
+      const prevBtn = wrapper.querySelector('.prev-btn');
+      const nextBtn = wrapper.querySelector('.next-btn');
+      let currentIndex = 0;
+      let autoplayTimer = null;
+
+      function updatePosition() {
+        const width = wrapper.querySelector('.video-carousel').offsetWidth;
+        track.style.transform = `translateX(-${currentIndex * width}px)`;
+        updateDots();
+      }
+
+      function updateDots() {
+        const dots = wrapper.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+      }
+
+      function goTo(index) {
+        currentIndex = index;
+        updatePosition();
+        stopAutoplay();
+      }
+
+      function next() {
+        currentIndex = (currentIndex + 1) % items.length;
+        updatePosition();
+      }
+
+      function prev() {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updatePosition();
+      }
+
+      function renderDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < items.length; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.addEventListener('click', () => goTo(i));
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function startAutoplay() {
+        autoplayTimer = setInterval(() => next(), 5000);
+      }
+
+      function stopAutoplay() {
+        clearInterval(autoplayTimer);
+      }
+
+      renderDots();
+      updatePosition();
+      startAutoplay();
+
+      prevBtn.addEventListener('click', () => { prev(); stopAutoplay(); });
+      nextBtn.addEventListener('click', () => { next(); stopAutoplay(); });
+      window.addEventListener('resize', updatePosition);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.video-carousel-wrapper').forEach(wrapper => {
+        initCarousel(wrapper);
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="">
+  
+        </a>
+
+
+      </div>
+
+    </div>
+  </nav>
+
+
+  <!-- <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title"><span class="dnerf">CtrlVDiff</span>: Controllable Video Generation via Unified Multimodal Video
+Diffusion</h1>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title"><span class="dnerf">CtrlVDiff</span>: Controllable Video Generation via Unified Multimodal Video
+Diffusion</h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?hl=en&user=7H29mf4AAAAJ">Dianbing Xi</a><sup>1,2,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://jiepengwang.github.io/">Jiepeng Wang</a><sup>2,*,‡</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://akira-l.github.io/">Yuanzhi Liang</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <p>Xi Qiu<sup>2</sup>,</p>
+              </span>
+              <span class="author-block">
+                <p>Jialun Liu<sup>2</sup>,</p>
+              </span>  
+              <span class="author-block">
+                <a href="https://haopan.github.io/">Hao Pan</a><sup>3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://person.zju.edu.cn/en/yuchihuo">Yuchi Huo</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://www.cad.zju.edu.cn/home/rwang/">Rui Wang</a><sup>1,†</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://brotherhuang.github.io/index.html">Haibin Huang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?hl=en&user=PXlNTokAAAAJ">Chi Zhang</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://xuelongli.cn/en.php">Xuelong Li</a><sup>2,†</sup>
+              </span>
+            </div>
+
+            <p><sup>*</sup> Equal contribution. <sup>†</sup> Corresponding author. <sup>‡</sup> Project leader. </p>
+
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>State Key Laboratory of CAD&CG, Zhejiang University</span> <br>
+              <span class="author-block"><sup>2</sup>Institute of Artificial Intelligence, China Telecom (TeleAI)</span> <br>
+              <span class="author-block"><sup>3</sup>Tsinghua University</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2504.10825" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2504.10825" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>ArXiv</span>
+                  </a>
+                </span>
+
+                <!-- <span class="link-block">
+                  <a href="https://github.com/Tele-AI/OmniVDiff" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span> -->
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+
+        <img id="teaser" src="./static/images/teaser.png" alt="Teaser Image" style="height: 80%;">
+        <h2 class="subtitle has-text-centered">
+          <span class="dnerf">CtrlVDiff</span> unifies forward and inverse video generation within a single model, 
+enabling the extraction of all modalities in a single pass. It provides layer-wise control over appearance and structure, facilitating applications such as material editing and object insertion.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+            We tackle the dual challenges of video understanding and controllable video generation within a unified diffusion framework. Our key insights are two-fold: geometry-only cues (e.g., depth, edges) are insufficient: they specify layout but under-constrain appearance, materials, and illumination, limiting physically meaningful edits such as relighting or material swaps and often causing temporal drift. Enriching the model with additional graphics-based modalities (intrinsics and semantics) provides complementary constraints that both disambiguate understanding and enable precise, predictable control during generation.
+            
+            </p>
+            <p>
+              However, building a single model that uses many heterogeneous cues introduces two core difficulties. Architecturally, the model must accept any subset of modalities, remain robust to missing inputs, and inject control signals without sacrificing temporal consistency. Data-wise, training demands large-scale, temporally aligned supervision that ties real videos to per-pixel multimodal annotations.
+            </p>
+            <p>
+  We then propose <span class="dnerf">CtrlVDiff</span>, a unified diffusion model trained with a Hybrid Modality Control Strategy (HMCS) that routes and fuses features from depth, normals, segmentation, edges, and graphics-based intrinsics (albedo, roughness, metallic), and re-renders videos from any chosen subset with strong temporal coherence. To enable this, we build MMVideo, a hybrid real-and-synthetic dataset aligned across modalities and captions. Across understanding and generation benchmarks, <span class="dnerf">CtrlVDiff</span> delivers superior controllability and fidelity, enabling layer-wise edits (relighting, material adjustment, object insertion) and surpassing state-of-the-art baselines while remaining robust when some modalities are unavailable.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+      <!-- Method overview. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Method overview</h2>
+          <img id="teaser" src="./static/images/method.png" alt="Teaser Image" style="height: 80%;">
+        </div>
+      </div>
+      <div class="content has-text-justified">
+        <p>
+    Framework overview of <span class="dnerf">CtrlVDiff</span>. 
+    Given a video with eight paired modalities, 
+    we first encode all modalities into latent representations using a pretrained shared 3D-VAE encoder. 
+    For each sample within a batch, its latent features are concatenated along the channel dimension. 
+    Subsequently, we apply the Hybrid Modality Control Strategy (HMCS) to each batch (as illustrated in the box on the right), 
+    which enables robust handling of all possible modality combinations. The outputs of the Diffusion Transformer are then processed through modality specific projection layers, 
+    where each modality is assigned an independent projection head to encourage effective modality disentanglement. 
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+
+
+        <!-- Results. -->
+
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+
+            <!-- <h2 class="title is-3">Results: Controllable Video Generation</h2> -->
+
+            <h2 class="title is-2">Results: Controllable Video Generation</h2>
+            <!-- Text to mul-modality video generation. -->
+            <div class="content has-text-justified">
+              <p>
+                 <span class="dnerf">CtrlVDiff</span> supports a wide range of conditional combinations. 
+Below, we present results across various tasks, including single-condition generation, multi-condition generation, 
+text-to-multimodal video generation, and video understanding.
+              </p>
+            </div>
+
+
+            <h3 class="title is-3">Single Condition Generation</h3>
+
+            <div class="video-carousel-wrapper">
+              <div class="video-carousel">
+                <div class="video-track">
+                  
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_depth_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_normal_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_albedo_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_roughness_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_metallic_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_segment_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_single_condition_canny_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                </div>
+                <div class="dot-overlay"></div>
+              </div>
+              <div class="video-controls">
+                <button class="nav-button prev-btn">‹</button>
+                <button class="nav-button next-btn">›</button>
+              </div>
+            </div>
+
+            <div class="content has-text-justified">
+              <p>
+              <span class="dnerf">CtrlVDiff</span> is capable of flexibly generating videos from a single condition, 
+              such as normal, albedo, roughness, or metallic. 
+              We observe that each of these modalities, when used as a guiding signal, can lead to high-quality video generation.
+              </p>
+            </div>
+
+
+            <h3 class="title is-3"> Multi-condition Generation</h3>
+            <div class="video-carousel-wrapper">
+              <div class="video-carousel">
+                <div class="video-track">
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_multi_condition_seg+can_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                          <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_multi_condition_d+n+s+c_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_multi_condition_a+r+m_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_multi_condition_a+r+m+d+n_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_multi_condition_a+r+m+s+c_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item"><video
+                      src="./static/1080p/result/result_all_condition_video_generation.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+                </div>
+                <div class="dot-overlay"></div>
+              </div>
+              <div class="video-controls">
+                <button class="nav-button prev-btn">‹</button>
+                <button class="nav-button next-btn">›</button>
+              </div>
+            </div>
+
+            <div class="content has-text-justified">
+              <p>
+<span class="dnerf">CtrlVDiff</span> is capable of flexibly generating videos from multiple combinations of conditions, 
+and below we present results for several representative examples. 
+The results demonstrate that our multi-condition generation approach can produce high-quality video content.
+
+              </p>
+            </div>
+
+
+           <h3 class="title is-3">Video Reconstruction</h3>
+
+
+            <div class="video-item">
+              <video
+                src="./static/1080p/result/video_mm_video.mp4"
+                autoplay loop muted controls></video>
+            </div>
+            <div class="content has-text-justified">
+              <p>
+              After decomposing the input video and using all decomposed modalities as conditions, 
+<span class="dnerf">CtrlVDiff</span> can effectively reconstruct the video content.
+              </p>
+            </div>
+
+            <h3 class="title is-3">Text to Multi-modality Video Generation</h3>
+            <div class="video-item"><video
+                src="./static/1080p/result/result_text_video_generation.mp4"
+                autoplay loop muted controls></video>
+            </div>
+            <div class="content has-text-justified">
+              <p>
+               Moreover, even in the absence of any conditioning inputs, <span class="dnerf">CtrlVDiff</span> can still generate multimodal video sequences guided solely by text prompts.
+              </p>
+            </div>
+        
+                  
+            <h3 class="title is-3">Video Understanding</h3>
+
+
+               <div class="video-carousel-wrapper">
+              <div class="video-carousel">
+                <div class="video-track">
+                  
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_video_understanding_case1.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_video_understanding_case2.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_video_understanding_case3.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                  <div class="video-item">
+                    <video
+                      src="./static/1080p/result/result_video_understanding_case4.mp4"
+                      autoplay loop muted controls></video>
+                  </div>
+
+                </div>
+                <div class="dot-overlay"></div>
+              </div>
+              <div class="video-controls">
+                <button class="nav-button prev-btn">‹</button>
+                <button class="nav-button next-btn">›</button>
+              </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="content has-text-justified">
+          <p>
+          When conditioned on RGB, 
+          <span class="dnerf">CtrlVDiff</span> can efficiently interpret the video content and simultaneously generate multimodal outputs, 
+          all of which maintain high consistency and strong detail fidelity.
+              </p>
+            </div>
+
+            <!--/ Text to mul-modality video generation. -->
+
+
+
+
+            <h2 class="title is-2">Comparison: Generation and Understanding</h2>
+
+            <!-- Controllable video generation. -->
+            <h3 class="title is-3">Video Generation</h3>
+
+            <div class="content has-text-justified">
+              <p>
+                We conduct a comprehensive evaluation of <span class="dnerf">CtrlVDiff</span> on both multi-condition and single-condition generation tasks.
+              </p>
+            </div>
+
+
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_reconstruction.mp4" type="video/mp4">
+            </video>
+            <div class="content has-text-justified">
+            <p>
+            We compare <span class="dnerf">CtrlVDiff</span> with current state-of-the-art multi-condition video generation methods. 
+            In this evaluation, each method uses all available conditioning modalities, making the task equivalent to video reconstruction. 
+            Under this setting, our method demonstrates superior consistency with the input video as well as higher visual realism.
+            </p>
+            </div>
+
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_depth_cond.mp4" type="video/mp4">
+            </video>
+
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_canny_cond.mp4" type="video/mp4">
+            </video>
+
+            <div class="content has-text-justified">
+              <p>
+              <span class="dnerf">CtrlVDiff</span> is compared with state-of-the-art methods for depth-guided and canny-guided video generation. 
+              In both tasks, our method continues to deliver competitive results relative to the latest approaches.
+              </p>
+            </div>
+
+            <!--video understanding. -->
+            <h3 class="title is-3">Video understanding</h3>
+
+            <div class="content has-text-justified">
+              <p>
+                We conduct a comprehensive evaluation of <span class="dnerf">CtrlVDiff</span> on video understanding tasks, 
+assessing the prediction quality of depth, segmentation, normal, and material properties (albedo, roughness, and metallicity).
+              </p>
+            </div>
+
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_understanding_depth_segment.mp4" type="video/mp4">
+            </video>
+
+            <div class="content has-text-justified">
+              <p>
+              <span class="dnerf">CtrlVDiff</span> produces more detailed geometric predictions in the depth modality, 
+              capturing fine structures such as thin wires. 
+              For segmentation, <span class="dnerf">CtrlVDiff</span> demonstrates stronger spatial consistency, 
+              for example by maintaining coherent table segmentation and correctly grouping the person’s hand into a single category.
+              </p>
+            </div>
+
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_understanding_normal.mp4" type="video/mp4">
+            </video>
+            <div class="content has-text-justified">
+              <p>
+                DiffusionRenderer (DR) includes two versions: one based on SVD and one based on Cosmos, 
+                where Cosmos serves as our expert model. 
+                <span class="dnerf">CtrlVDiff</span> achieves performance close to this expert model. 
+                For the single-modality expert model NormalCrafter, our method produces even finer details.
+              </p>
+            </div>
+            <video id="replay-video" autoplay loop muted controls width="75%">
+              <source src="./static/1080p/compare/compare_video_understanding_material.mp4" type="video/mp4">
+            </video>
+           <div class="content has-text-justified">
+              <p>
+          Compared with other methods, <span class="dnerf">CtrlVDiff</span> demonstrates more physically plausible qualitative results in material property prediction on the InteriorVerse Test Dataset. 
+          In particular, <span class="dnerf">CtrlVDiff</span> shows notably stronger performance in predicting roughness and metallic.
+              </p>
+            </div>
+
+                <h2 class="title is-2">Applications</h2>
+                <div class="content has-text-justified">
+                  <p>
+      We further demonstrate the application potential of <span class="dnerf">CtrlVDiff</span> in video editing through layer-wise control. 
+      In tasks such as scene relighting, material editing, and object insertion, 
+      <span class="dnerf">CtrlVDiff</span> consistently delivers high-quality video editing results.
+                  </p>
+                </div>
+                
+                <!-- Scene Relighting. -->
+                <h3 class="title is-3">Scene Relighting</h3>
+  
+
+                <div class="content has-text-centered">
+                  <video id="replay-video" autoplay loop muted controls width="75%">
+                    <source src="./static/1080p/application/application_relighting.mp4" type="video/mp4">
+                  </video>
+                </div>
+               <div class="content has-text-justified">
+                  <p>
+                  For an input video, <span class="dnerf">CtrlVDiff</span> first decomposes it into all underlying modalities. 
+                  These modalities are then used as conditioning inputs, and together with a new lighting description prompt, 
+                  the model generates a video with the desired relighting effect while preserving the original content and structure.
+                  </p>
+                </div>
+                <!--/Scene Relighting. -->
+
+                <!-- Material Editing. -->
+                <h3 class="title is-3">Material Editing</h3>
+                <div class="content has-text-centered">
+                  <video id="replay-video" autoplay loop muted controls width="75%">
+                    <source src="./static/1080p/application/application_edit.mp4" type="video/mp4">
+                  </video>
+                </div>
+
+                <div class="content has-text-justified">
+                  <p>
+For a given input video, <span class="dnerf">CtrlVDiff</span> first decomposes it to obtain all relevant modalities. 
+By modifying the albedo properties and using the edited modality together with the remaining original modalities as conditioning inputs, 
+the model generates a video that reflects the desired albedo edits while preserving the original content and structure.
+                  </p>
+                </div>
+                <!--/Material Editing. -->
+
+
+                <!-- Object Insertion. -->
+                <h3 class="title is-3">Object Insertion</h3>
+                <div class="content has-text-centered">
+                  <video id="replay-video" autoplay loop muted controls width="75%">
+                    <source src="./static/1080p/application/application_insert.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <div class="content has-text-justified">
+                  <p>
+                  When using two modalities (albedo and normal) as conditioning inputs, 
+                  <span class="dnerf">CtrlVDiff</span> can generate videos as shown in the top row. 
+                  By modifying the albedo and normal modalities to insert new objects (e.g., a bowl or a bottle), 
+                  the model is able to produce videos that include the inserted objects, as illustrated in the bottom row, 
+                  while preserving the original content and structure of the scene.
+                  </p>
+                </div>
+                <!--/Object Insertion. -->
+
+
+          </div>
+        </div>
+
+
+      </div>
+  </section>
+
+    <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{xdb2025OmniVDiff,
+  author    = {Xi, Dianbing and Wang, Jiepeng and Liang, Yuanzhi and Qi, Xi and Huo, Yuchi and Wang, Rui and Zhang, Chi and Li, Xuelong},
+  title     = {OmniVDiff: Omni Controllable Video Diffusion for Generation and Understanding},
+  journal   = {arXiv preprint arXiv:2504.10825},
+  year      = {2025},
+}</code></pre>
+    </div>
+  </section>
+
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <!-- <a class="icon-link" href="https://arxiv.org/pdf/2504.10825">
+          <i class="fas fa-file-pdf"></i>
+        </a> -->
+        <!-- <a class="icon-link" href="https://github.com/Tele-AI/OmniVDiff" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a> -->
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+                Thanks to <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> for their excellent website templates.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
