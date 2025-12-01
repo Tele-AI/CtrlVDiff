@@ -11,7 +11,7 @@
     <a href="https://haopan.github.io/">Hao Pan</a><sup>3</sup>,
     <a href="http://www.cad.zju.edu.cn/home/huo/">Yuchi Huo</a><sup>1</sup>,
     <a href="http://www.cad.zju.edu.cn/home/rwang/">Rui Wang</a><sup>1,†</sup>,
-    <a href="https://brotherhuang.github.io/index.html">Haibin Huang</a><sup>1</sup>,
+    <a href="https://brotherhuang.github.io/index.html">Haibin Huang</a><sup>2</sup>,
     <a href="https://scholar.google.com/citations?hl=en&user=PXlNTokAAAAJ">Chi Zhang</a><sup>2</sup>,
     <a href="https://xuelongli-link.com">Xuelong Li</a><sup>2,†</sup>
   </b>
