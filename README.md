@@ -3,7 +3,7 @@
 
 <p align="center">
   <b>
-    <a href="https://scholar.google.com/citations?hl=en&user=7H29mf4AAAAJ">Dianbing Xi</a><sup>1,2,*</sup>,
+    <a href="https://xdobetter.github.io/">Dianbing Xi</a><sup>1,2,*</sup>,
     <a href="https://jiepengwang.github.io/">Jiepeng Wang</a><sup>2,*,‡</sup>,
     <a href="https://akira-l.github.io/">Yuanzhi Liang</a><sup>2</sup>,
     Xi Qiu<sup>2</sup>,
